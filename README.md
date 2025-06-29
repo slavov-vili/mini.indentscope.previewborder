@@ -1,3 +1,5 @@
+# A fork of [echsnovski/mini.indentscope](https://github.com/echasnovski/mini.nvim/blob/main/README.md) which adds previews for the scope borders
+
 <img src="https://github.com/echasnovski/media/blob/main/mini.nvim/logo/logo_indentscope.png" style="width: 100%"/>
 
 <!-- badges: start -->
