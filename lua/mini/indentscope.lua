@@ -927,20 +927,18 @@ end
 
 H.preview_borders = function(scope)
   local border_preview = H.get_config().options.border_preview
-  for _, border in ipairs({'top', 'bottom'}) do
-    if border_preview == 'both' or border_preview == border then
-      H.preview_a_border(scope, border)
-    end
+  for _, border in ipairs({ 'top', 'bottom' }) do
+    if border_preview == 'both' or border_preview == border then H.preview_a_border(scope, border) end
   end
 end
 
 H.preview_a_border = function(scope, border)
   local border_lnum = scope.border[border]
-  local preview_lnum = vim.fn.line('w0');
+  local preview_lnum = vim.fn.line('w0')
   local should_preview = border_lnum < preview_lnum
   local winrow = 0
 
-  if (border == 'bottom') then
+  if border == 'bottom' then
     preview_lnum = vim.fn.line('w$')
     should_preview = border_lnum > preview_lnum
     winrow = vim.api.nvim_win_get_height(0) - 1
