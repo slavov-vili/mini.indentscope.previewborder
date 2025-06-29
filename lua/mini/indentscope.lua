@@ -559,7 +559,7 @@ H.timer = vim.loop.new_timer()
 -- - `event_id` - counter for events.
 -- - `scope` - latest drawn scope.
 -- - `draw_status` - status of current drawing.
-H.current = { event_id = 0, scope = {}, draw_status = 'none' }
+H.current = { event_id = 0, scope = {}, draw_status = 'none', border_preview_winid = nil }
 
 -- Functions to compute indent in ambiguous cases
 H.indent_funs = {
@@ -860,6 +860,8 @@ H.draw_scope = function(scope, opts)
   -- Perform drawing
   H.current.draw_status = 'drawing'
   H.draw_indicator_animation(indicator, draw_fun, opts.animation_fun)
+
+  H.draw_border(scope)
 end
 
 H.draw_indicator_animation = function(indicator, draw_fun, animation_fun)
@@ -918,6 +920,26 @@ H.draw_indicator_animation = function(indicator, draw_fun, animation_fun)
   draw_step()
 end
 
+H.draw_border = function(scope)
+  local border_lnum = scope.border.top
+  local preview_lnum = vim.fn.line('w0')
+
+  if border_lnum < preview_lnum then
+    H.current.border_preview_winid = vim.api.nvim_open_win(0, false, {
+      relative = 'win',
+      row = 0,
+      col = 0,
+      width = vim.api.nvim_win_get_width(0),
+      height = 1,
+      focusable = false,
+      mouse = true,
+      zindex = 90,
+      noautocmd = true,
+    })
+    vim.api.nvim_win_set_cursor(H.current.border_preview_winid, { border_lnum, 0 })
+  end
+end
+
 H.undraw_scope = function(opts)
   opts = opts or {}
 
@@ -928,6 +950,11 @@ H.undraw_scope = function(opts)
 
   H.current.draw_status = 'none'
   H.current.scope = {}
+
+  if H.current.border_preview_winid then
+    vim.api.nvim_win_close(H.current.border_preview_winid, true)
+    H.current.border_preview_winid = nil
+  end
 end
 
 H.make_autodraw_opts = function(scope)
