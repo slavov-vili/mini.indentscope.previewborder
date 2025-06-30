@@ -934,20 +934,12 @@ end
 
 H.preview_a_border = function(scope, border)
   local border_lnum = scope.border[border]
-  local preview_lnum = vim.fn.line('w0')
-  local should_preview = border_lnum < preview_lnum
-  local winrow = 0
+  local preview_opts = H.make_preview_opts(border, border_lnum)
 
-  if border == 'bottom' then
-    preview_lnum = vim.fn.line('w$')
-    should_preview = border_lnum > preview_lnum
-    winrow = vim.api.nvim_win_get_height(0) - 1
-  end
-
-  if should_preview then
+  if preview_opts and preview_opts.should_preview then
     local winid = vim.api.nvim_open_win(0, false, {
       relative = 'win',
-      row = winrow,
+      row = preview_opts.winrow,
       col = 0,
       width = vim.api.nvim_win_get_width(0),
       height = 1,
@@ -1033,6 +1025,26 @@ H.make_draw_function = function(indicator, opts)
     if not (indicator.top <= l and l <= indicator.bottom) then return true end
 
     return pcall(vim.api.nvim_buf_set_extmark, indicator.buf_id, H.ns_id, l - 1, 0, extmark_opts)
+  end
+end
+
+H.make_preview_opts = function(border, border_lnum)
+  if 'top' == border then
+    local preview_lnum = vim.fn.line('w0')
+    return {
+      preview_lnum = preview_lnum,
+      should_preview = border_lnum < preview_lnum,
+      winrow = 0,
+    }
+  elseif 'bottom' == border then
+    local preview_lnum = vim.fn.line('w$')
+    return {
+      preview_lnum = preview_lnum,
+      should_preview = border_lnum > preview_lnum,
+      winrow = vim.api.nvim_win_get_height(0) - 1,
+    }
+  else
+    return nil
   end
 end
 
