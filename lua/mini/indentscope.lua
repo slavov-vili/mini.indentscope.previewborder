@@ -969,8 +969,10 @@ end
 
 H.hide_preview_border = function()
   for border, winid in pairs(H.current.border_preview_winids) do
-    vim.api.nvim_win_close(winid, true)
-    H.current.border_preview_winids[border] = nil
+    if vim.api.nvim_win_is_valid(winid) then
+      vim.api.nvim_win_close(winid, true)
+      H.current.border_preview_winids[border] = nil
+    end
   end
 end
 
