@@ -343,6 +343,17 @@ MiniIndentscope.get_scope = function(line, col, opts)
     body.is_incomplete = up_is_incomplete or down_is_incomplete
   end
 
+  -- FIXME: if line is blank -> cur_indent = max
+  local cur_indent = vim.fn.indent(line)
+  local cur_top = line
+  local top_indent = cur_indent
+  while top_indent >= cur_indent do
+    cur_top = vim.fn.prevnonblank(cur_top - 1)
+    top_indent = vim.fn.indent(cur_top)
+  end
+  -- NOTE: printing blocks redraw!
+  print("Top scope: " .. body.top .. "(fancy) vs " .. cur_top + 1 .. " (mine)")
+
   return {
     body = body,
     border = H.border_from_body[opts.border](body, opts),

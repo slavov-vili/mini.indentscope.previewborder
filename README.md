@@ -1,5 +1,17 @@
 # A fork of [echsnovski/mini.indentscope](https://github.com/echasnovski/mini.nvim/blob/main/README.md) which adds previews for the scope borders
 
+## TODOs
+    * If cur\_line is blank - indent = max int or something
+    * Max search lines (if not found - show ... or something funny/censored)
+    * Scope relative to: line, cursor
+    * Scope text object (remain at current line)
+    * Go to prev/next scope horizontally (within line)
+    * Go to prev/next scope vertically (other lines)
+    * Go to beginning/end of cur scope
+    * Deal with broken scopes: what if indentation is wrong?
+    * What if end is more indented than the beginning?
+    * Treesitter instead of indent
+
 <img src="https://github.com/echasnovski/media/blob/main/mini.nvim/logo/logo_indentscope.png" style="width: 100%"/>
 
 <!-- badges: start -->
